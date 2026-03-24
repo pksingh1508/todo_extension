@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Task Planner",
+  "version": "1.0",
+  "description": "A simple and elegant todo list that opens in new tabs",
+  "chrome_url_overrides": {
+    "newtab": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["storage"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Task Planner"
+  }
+}

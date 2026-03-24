@@ -1,0 +1,943 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #12121b;
+  color: #f3f5ff;
+  width: 100vw;
+  min-height: 90vh;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.app-shell {
+  height: 92vh;
+  width: 100%;
+  max-width: 1400px;
+}
+
+.container {
+  width: 100%;
+  min-width: 1280px;
+  max-width: 1400px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 30px;
+  border-radius: 24px;
+  background: #11111b;
+  border: 1px solid rgba(92, 116, 228, 0.2);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
+}
+
+.views-wrapper {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  min-height: 400px;
+}
+
+.input-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  animation: fadeInUp 0.8s ease-out 0.1s both;
+  position: relative;
+  z-index: 10;
+}
+
+#todoInput {
+  flex: 1;
+  padding: 14px 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(92, 116, 228, 0.35);
+  background: rgba(13, 18, 38, 0.9);
+  color: #f3f5ff;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+}
+
+#todoInput:focus {
+  outline: none;
+  border-color: rgba(73, 157, 255, 0.85);
+  box-shadow: 0 0 25px rgba(73, 157, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+#todoInput::placeholder {
+  color: rgba(203, 210, 255, 0.45);
+}
+
+#addBtn {
+  width: 46px;
+  height: 46px;
+  border: none;
+  border-radius: 18px;
+  background: #3b73ff;
+  color: #060812;
+  font-size: 26px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 15px 25px rgba(49, 141, 255, 0.35);
+}
+
+#addBtn:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 18px 32px rgba(49, 141, 255, 0.45);
+}
+
+#addBtn:active {
+  transform: translateY(1px) scale(0.97);
+}
+
+#goalsBtn {
+  width: 46px;
+  height: 46px;
+  border: none;
+  border-radius: 18px;
+  background: #9d4edd;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 15px 25px rgba(157, 78, 221, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#goalsBtn svg {
+  width: 22px;
+  height: 22px;
+}
+
+#goalsBtn:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 18px 32px rgba(157, 78, 221, 0.45);
+}
+
+#goalsBtn:active {
+  transform: translateY(1px) scale(0.97);
+}
+
+#goalsBtn.active {
+  background: #c77dff;
+  box-shadow: 0 0 25px rgba(199, 125, 255, 0.5);
+}
+
+.todo-sections {
+  display: grid;
+  grid-template-columns: 600px 600px;
+  gap: 30px;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+}
+
+.todo-sections.hidden {
+  display: none;
+}
+
+/* Goals View Styles */
+.goals-view {
+  display: grid;
+  grid-template-columns: 600px 600px;
+  gap: 30px;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateX(100%);
+  opacity: 0;
+  transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+}
+
+.goals-view.hidden {
+  display: none;
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.goals-section {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+  height: 100%;
+  padding: 22px 20px 24px;
+  border-radius: 20px;
+  background: #0d1122;
+  border: 1px solid rgba(157, 78, 221, 0.3);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+}
+
+.goals-section.completed {
+  border-color: rgba(95, 193, 135, 0.3);
+}
+
+.goals-section.completed h2 {
+  color: #5fc186;
+}
+
+.goals-section h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #c77dff;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.input-section.hidden {
+  display: none;
+}
+
+#backToTodosBtn {
+  width: 46px;
+  height: 46px;
+  border: none;
+  border-radius: 18px;
+  background: #6c757d;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 15px 25px rgba(108, 117, 125, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#backToTodosBtn svg {
+  width: 22px;
+  height: 22px;
+}
+
+#backToTodosBtn:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 18px 32px rgba(108, 117, 125, 0.45);
+}
+
+#backToTodosBtn:active {
+  transform: translateY(1px) scale(0.97);
+}
+
+#goalInput {
+  flex: 1;
+  padding: 14px 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(157, 78, 221, 0.35);
+  background: rgba(13, 18, 38, 0.9);
+  color: #f3f5ff;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+}
+
+#goalInput:focus {
+  outline: none;
+  border-color: rgba(199, 125, 255, 0.85);
+  box-shadow: 0 0 25px rgba(199, 125, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+#goalInput::placeholder {
+  color: rgba(203, 210, 255, 0.45);
+}
+
+#addGoalBtn {
+  width: 46px;
+  height: 46px;
+  border: none;
+  border-radius: 18px;
+  background: #9d4edd;
+  color: #fff;
+  font-size: 26px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 15px 25px rgba(157, 78, 221, 0.35);
+}
+
+#addGoalBtn:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 18px 32px rgba(157, 78, 221, 0.45);
+}
+
+#addGoalBtn:active {
+  transform: translateY(1px) scale(0.97);
+}
+
+.goals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.goals-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.goals-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.goals-list::-webkit-scrollbar-thumb {
+  background: rgba(157, 78, 221, 0.45);
+  border-radius: 4px;
+}
+
+.goals-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(157, 78, 221, 0.65);
+}
+
+.goal-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: #2d1b4e;
+  border: 1px solid rgba(157, 78, 221, 0.25);
+  box-shadow: 0 18px 28px rgba(3, 5, 15, 0.6);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  animation: slideInRight 0.5s ease-out;
+}
+
+.goal-item:hover {
+  transform: translateY(-3px);
+  border-color: rgba(199, 125, 255, 0.5);
+  box-shadow: 0 20px 34px rgba(6, 10, 20, 0.65);
+}
+
+.goal-item .drag-handle {
+  color: rgba(199, 125, 255, 0.5);
+}
+
+.goal-item .drag-handle:hover {
+  color: rgba(199, 125, 255, 1);
+}
+
+.goal-item .progress-checkbox,
+.goal-item .in-progress-label {
+  pointer-events: auto;
+}
+
+.goal-item.dragging {
+  opacity: 0.6;
+  transform: scale(1.02) rotate(1deg);
+  box-shadow: 0 25px 50px rgba(6, 10, 20, 0.9);
+  border: 2px solid rgba(199, 125, 255, 0.9);
+  background: #3d216e;
+}
+
+.goal-item.drag-over {
+  border: 2px dashed rgba(199, 125, 255, 0.9);
+  box-shadow: 0 0 25px rgba(199, 125, 255, 0.4);
+  transform: translateY(-3px);
+  background: #3d216e;
+}
+
+.goal-text {
+  flex: 1;
+  color: #f3f5ff;
+  font-size: 15px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.goal-text.completed {
+  color: rgba(203, 210, 255, 0.55);
+  text-decoration: line-through;
+}
+
+.goal-item.completed {
+  border-color: rgba(95, 193, 135, 0.4);
+  background: #172828;
+  opacity: 0.9;
+}
+
+.goal-item .checkbox {
+  width: 22px;
+  height: 22px;
+  border: 2px solid rgba(157, 78, 221, 0.45);
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  background: rgba(10, 13, 30, 0.6);
+}
+
+.goal-item .checkbox:hover {
+  border-color: rgba(199, 125, 255, 0.75);
+  box-shadow: 0 0 12px rgba(199, 125, 255, 0.35);
+}
+
+.goal-item .checkbox.checked {
+  background: #5eddd3;
+  border-color: rgba(95, 193, 135, 0.85);
+  transform: scale(1.08);
+}
+
+.goal-item .checkbox.checked::after {
+  content: "\2713";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -55%);
+  color: #07101f;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.goal-item .delete-btn {
+  background: rgba(255, 106, 129, 0.15);
+  color: #ff6a81;
+}
+
+.goal-item .delete-btn:hover {
+  background: rgba(255, 106, 129, 0.25);
+  color: #ff94a5;
+}
+
+.goal-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.goal-item .edit-btn {
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 12px;
+  background: rgba(157, 78, 221, 0.15);
+  color: #c77dff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.goal-item .edit-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.goal-item .edit-btn:hover {
+  background: rgba(157, 78, 221, 0.25);
+  color: #ddb2ff;
+  transform: scale(1.05);
+}
+
+.goal-item .edit-btn:active {
+  transform: scale(0.94);
+}
+
+/* Goal progress styles */
+.goal-item .progress-checkbox {
+  width: 22px;
+  height: 22px;
+  border: 2px solid rgba(199, 125, 255, 0.45);
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  background: rgba(10, 13, 30, 0.6);
+}
+
+.goal-item .progress-checkbox:hover {
+  border-color: rgba(199, 125, 255, 0.75);
+  box-shadow: 0 0 12px rgba(199, 125, 255, 0.35);
+}
+
+.goal-item .progress-checkbox.checked {
+  background: #c77dff;
+  border-color: rgba(199, 125, 255, 0.85);
+  transform: scale(1.08);
+}
+
+.goal-item .progress-checkbox.checked::after {
+  content: "\25B8";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #07101f;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.goal-item .in-progress-label {
+  font-size: 9px;
+  color: #c77dff;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.goal-text.in-progress {
+  color: #c77dff;
+  font-weight: 500;
+}
+
+.todo-section {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  height: 100%;
+  padding: 22px 20px 24px;
+  border-radius: 20px;
+  background: #0d1122;
+  border: 1px solid rgba(92, 116, 228, 0.22);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+  animation: fadeIn 0.8s ease-out 0.3s both;
+}
+
+.todo-section h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #6bc9ff;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.todo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.todo-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.todo-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.todo-list::-webkit-scrollbar-thumb {
+  background: rgba(92, 116, 228, 0.45);
+  border-radius: 4px;
+}
+
+.todo-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(92, 116, 228, 0.65);
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: #1a2242;
+  border: 1px solid rgba(92, 116, 228, 0.25);
+  box-shadow: 0 18px 28px rgba(3, 5, 15, 0.6);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  animation: slideInRight 0.5s ease-out;
+}
+
+.todo-item:hover {
+  transform: translateY(-3px);
+  border-color: rgba(90, 204, 255, 0.5);
+  box-shadow: 0 20px 34px rgba(6, 10, 20, 0.65);
+}
+
+.todo-item.completed {
+  border-color: rgba(95, 193, 135, 0.4);
+  background: #172828;
+  opacity: 0.9;
+}
+
+.todo-text {
+  flex: 1;
+  color: #f3f5ff;
+  font-size: 15px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.todo-text.completed {
+  color: rgba(203, 210, 255, 0.55);
+  text-decoration: line-through;
+}
+
+.checkbox {
+  width: 22px;
+  height: 22px;
+  border: 2px solid rgba(92, 116, 228, 0.45);
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  background: rgba(10, 13, 30, 0.6);
+}
+
+.checkbox:hover {
+  border-color: rgba(90, 204, 255, 0.75);
+  box-shadow: 0 0 12px rgba(90, 204, 255, 0.35);
+}
+
+.checkbox.checked {
+  background: #5eddd3;
+  border-color: rgba(90, 204, 255, 0.85);
+  transform: scale(1.08);
+}
+
+.checkbox.checked::after {
+  content: "\2713";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -55%);
+  color: #07101f;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Progress checkbox styles */
+.left-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.left-controls.drag-only {
+  justify-content: center;
+  gap: 0;
+}
+
+.left-controls .controls-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.item-main-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 10px;
+}
+
+.item-top-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.in-progress-label {
+  font-size: 9px;
+  color: #ffc107;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.progress-checkbox {
+  width: 22px;
+  height: 22px;
+  border: 2px solid rgba(255, 193, 7, 0.45);
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  background: rgba(10, 13, 30, 0.6);
+}
+
+.progress-checkbox:hover {
+  border-color: rgba(255, 193, 7, 0.75);
+  box-shadow: 0 0 12px rgba(255, 193, 7, 0.35);
+}
+
+.progress-checkbox.checked {
+  background: #ffc107;
+  border-color: rgba(255, 152, 0, 0.85);
+  transform: scale(1.08);
+}
+
+.progress-checkbox.checked::after {
+  content: "\25B8";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #07101f;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.todo-text.in-progress {
+  color: #ffc107;
+  font-weight: 500;
+}
+
+.todo-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.delete-btn {
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 12px;
+  background: rgba(255, 106, 129, 0.15);
+  color: #ff6a81;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.delete-btn:hover {
+  background: rgba(255, 106, 129, 0.25);
+  color: #ff94a5;
+  transform: scale(1.05);
+}
+
+.delete-btn:active {
+  transform: scale(0.94);
+}
+
+.edit-btn {
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 12px;
+  background: rgba(92, 116, 228, 0.15);
+  color: #6bc9ff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.edit-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.edit-btn:hover {
+  background: rgba(92, 116, 228, 0.25);
+  color: #90dcff;
+  transform: scale(1.05);
+}
+
+.edit-btn:active {
+  transform: scale(0.94);
+}
+
+/* Drag and Drop Styles */
+.drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 24px;
+  color: rgba(203, 210, 255, 0.5);
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1;
+  cursor: grab;
+  user-select: none;
+  transition: all 0.2s ease;
+  margin-right: 4px;
+}
+
+.drag-handle:hover {
+  color: rgba(90, 204, 255, 1);
+  transform: scale(1.1);
+}
+
+.todo-item[draggable="true"] {
+  cursor: grab;
+}
+
+.todo-item[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.todo-item.dragging {
+  opacity: 0.6;
+  transform: scale(1.02) rotate(1deg);
+  box-shadow: 0 25px 50px rgba(6, 10, 20, 0.9);
+  border: 2px solid rgba(90, 204, 255, 0.9);
+  background: #243060;
+}
+
+.todo-item.drag-over {
+  border: 2px dashed rgba(90, 204, 255, 0.9);
+  box-shadow: 0 0 25px rgba(90, 204, 255, 0.4);
+  transform: translateY(-3px);
+  background: #1f2d5a;
+}
+
+/* Ensure drag events work properly on child elements */
+.todo-item * {
+  pointer-events: none;
+}
+
+.todo-item .delete-btn,
+.todo-item .edit-btn,
+.todo-item .checkbox,
+.todo-item .progress-checkbox,
+.todo-item .drag-handle {
+  pointer-events: auto;
+}
+
+.empty-message p {
+  margin: 0;
+  color: rgba(203, 210, 255, 0.45) !important;
+  font-style: normal !important;
+  text-align: center;
+}
+
+@media (max-width: 1400px) {
+  .todo-sections {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .goals-view {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .todo-sections {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .goals-view {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .container {
+    padding: 20px;
+    gap: 25px;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutLeft {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-5px);
+  }
+}
+
+@media (max-width: 450px) {
+  body {
+    padding: 10px;
+  }
+
+  .container {
+    padding: 15px;
+  }
+}

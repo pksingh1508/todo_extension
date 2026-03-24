@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Tab</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="container">
+        <div class="input-section" id="todoInputSection">
+          <input
+            type="text"
+            id="todoInput"
+            placeholder="Add a new todo..."
+            maxlength="200"
+          />
+          <button id="addBtn">+</button>
+          <button id="goalsBtn" title="My Goals">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="input-section hidden" id="goalInputSection">
+          <input
+            type="text"
+            id="goalInput"
+            placeholder="Add a new goal..."
+            maxlength="200"
+          />
+          <button id="addGoalBtn">+</button>
+          <button id="backToTodosBtn" title="Back to Todos">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12h18M3 12l6-6m-6 6l6 6"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="views-wrapper">
+          <main class="todo-sections" id="mainView">
+            <section class="todo-section">
+              <h2>Active Tasks</h2>
+              <div id="activeTodos" class="todo-list"></div>
+            </section>
+
+            <section class="todo-section">
+              <h2>Completed Tasks</h2>
+              <div id="completedTodos" class="todo-list"></div>
+            </section>
+          </main>
+
+          <main class="goals-view hidden" id="goalsView">
+            <section class="goals-section">
+              <h2>Active Goals</h2>
+              <div id="activeGoals" class="goals-list"></div>
+            </section>
+
+            <section class="goals-section completed">
+              <h2>Completed Goals</h2>
+              <div id="completedGoals" class="goals-list"></div>
+            </section>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
