@@ -8,21 +8,28 @@ class TodoApp {
     this.draggedType = null; // 'todo' or 'goal'
     this.editingTodoId = null;
     this.editingGoalId = null;
+    this.store = new SQLiteTaskStore();
     this.init();
   }
 
-  init() {
-    this.loadTodos();
-    this.loadGoals();
-    this.bindEvents();
+  async init() {
+    try {
+      await this.store.init();
+      this.loadTodos();
+      this.loadGoals();
+      this.bindEvents();
+      this.bindDatabaseEvents();
+    } catch (error) {
+      console.error("Error initializing SQLite storage:", error);
+      this.bindEvents();
+      this.render();
+    }
   }
 
   loadTodos() {
     try {
-      chrome.storage.local.get(["newTabTodos"], (result) => {
-        this.todos = result.newTabTodos || [];
-        this.render();
-      });
+      this.todos = this.store.getItems("todo");
+      this.render();
     } catch (error) {
       console.error("Error loading todos:", error);
       this.todos = [];
@@ -31,20 +38,21 @@ class TodoApp {
 
   saveTodos() {
     try {
-      chrome.storage.local.set({ newTabTodos: this.todos });
+      return this.store.saveItems("todo", this.todos).catch((error) => {
+        console.error("Error saving todos:", error);
+      });
     } catch (error) {
       console.error("Error saving todos:", error);
+      return Promise.resolve();
     }
   }
 
   loadGoals() {
     try {
-      chrome.storage.local.get(["newTabGoals"], (result) => {
-        this.goals = result.newTabGoals || [];
-        if (this.isGoalsView) {
-          this.renderGoals();
-        }
-      });
+      this.goals = this.store.getItems("goal");
+      if (this.isGoalsView) {
+        this.renderGoals();
+      }
     } catch (error) {
       console.error("Error loading goals:", error);
       this.goals = [];
@@ -53,9 +61,12 @@ class TodoApp {
 
   saveGoals() {
     try {
-      chrome.storage.local.set({ newTabGoals: this.goals });
+      return this.store.saveItems("goal", this.goals).catch((error) => {
+        console.error("Error saving goals:", error);
+      });
     } catch (error) {
       console.error("Error saving goals:", error);
+      return Promise.resolve();
     }
   }
 
@@ -89,25 +100,24 @@ class TodoApp {
       }
     });
 
-    // Listen for changes from other tabs/windows
-    try {
-      chrome.storage.onChanged.addListener((changes, namespace) => {
-        if (namespace === "local" && changes.newTabTodos) {
-          this.todos = changes.newTabTodos.newValue || [];
-          if (!this.isGoalsView) {
-            this.render();
-          }
+  }
+
+  bindDatabaseEvents() {
+    this.store.onDatabaseChanged(async () => {
+      try {
+        await this.store.reloadFromStorage();
+        this.todos = this.store.getItems("todo");
+        this.goals = this.store.getItems("goal");
+
+        if (this.isGoalsView) {
+          this.renderGoals();
+        } else {
+          this.render();
         }
-        if (namespace === "local" && changes.newTabGoals) {
-          this.goals = changes.newTabGoals.newValue || [];
-          if (this.isGoalsView) {
-            this.renderGoals();
-          }
-        }
-      });
-    } catch (error) {
-      console.log("Storage sync not available (running outside Chrome)");
-    }
+      } catch (error) {
+        console.error("Error syncing SQLite changes:", error);
+      }
+    });
   }
 
   toggleGoalsView() {
@@ -184,7 +194,7 @@ class TodoApp {
     }
 
     const goal = {
-      id: Date.now() + Math.random(),
+      id: this.store.createId(),
       text: text,
       completed: false,
       inProgress: false,
@@ -582,7 +592,7 @@ class TodoApp {
     }
 
     const todo = {
-      id: Date.now() + Math.random(),
+      id: this.store.createId(),
       text: text,
       completed: false,
       inProgress: false,
