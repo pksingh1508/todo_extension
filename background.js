@@ -1,3 +1,3 @@
-chrome.runtime.onInstalled.addListener(() => {
-  console.log("Year End Countdown extension installed!");
+chrome.runtime.onInstalled.addListener(({ reason }) => {
+  console.log(`Task Planner ${reason === "install" ? "installed" : "updated"}.`);
 });
